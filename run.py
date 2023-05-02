@@ -790,6 +790,8 @@ if __name__ == '__main__':
     START_DATE = datetime.datetime.now().strftime('%Y-%m-%d')
     START_TIME = datetime.datetime.now().strftime('%H-%M-%S-%f')
 
+    print("ALEX_1")
+
     # define SAVE_FOLDER as the timestamp - base model name - mask filling model name
     # create it if it doesn't exist
     precision_string = "int8" if args.int8 else ("fp16" if args.half else "fp32")
@@ -885,6 +887,7 @@ if __name__ == '__main__':
         baseline_outputs.append(eval_supervised(data, model='roberta-base-openai-detector'))
         baseline_outputs.append(eval_supervised(data, model='roberta-large-openai-detector'))
 
+    print("ALEX_2")
     outputs = []
 
     if not args.baselines_only:
@@ -929,6 +932,7 @@ if __name__ == '__main__':
     save_roc_curves(outputs)
     save_ll_histograms(outputs)
     save_llr_histograms(outputs)
+    print("ALEX_3")
 
     # move results folder from tmp_results/ to results/, making sure necessary directories exist
     new_folder = SAVE_FOLDER.replace("tmp_results", "results")
