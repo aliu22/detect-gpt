@@ -624,7 +624,7 @@ def generate_data(dataset, key):
     if dataset in custom_datasets.DATASETS:
         data = custom_datasets.load(dataset, cache_dir)
     else:
-        data = datasets.load_dataset(dataset, split='train', cache_dir=cache_dir)[key]
+        data = datasets.load_dataset(dataset, split='train')[key]
 
     # get unique examples, strip whitespace, and remove newlines
     # then take just the long examples, shuffle, take the first 5,000 to tokenize to save time
@@ -671,7 +671,7 @@ def load_base_model_and_tokenizer(name):
             base_model_kwargs.update(dict(torch_dtype=torch.float16))
         if 'gpt-j' in name:
             base_model_kwargs.update(dict(revision='float16'))
-        base_model = transformers.AutoModelForCausalLM.from_pretrained(name, **base_model_kwargs, cache_dir=cache_dir)
+        base_model = transformers.AutoModelForCausalLM.from_pretrained(name, **base_model_kwargs)#, cache_dir=cache_dir)
     else:
         base_model = None
 
@@ -681,7 +681,7 @@ def load_base_model_and_tokenizer(name):
         optional_tok_kwargs['fast'] = False
     if args.dataset in ['pubmed']:
         optional_tok_kwargs['padding_side'] = 'left'
-    base_tokenizer = transformers.AutoTokenizer.from_pretrained(name, **optional_tok_kwargs, cache_dir=cache_dir)
+    base_tokenizer = transformers.AutoTokenizer.from_pretrained(name, **optional_tok_kwargs)#, cache_dir=cache_dir)
     base_tokenizer.pad_token_id = base_tokenizer.eos_token_id
 
     return base_model, base_tokenizer
@@ -689,8 +689,8 @@ def load_base_model_and_tokenizer(name):
 
 def eval_supervised(data, model):
     print(f'Beginning supervised evaluation with {model}...')
-    detector = transformers.AutoModelForSequenceClassification.from_pretrained(model, cache_dir=cache_dir).to(DEVICE)
-    tokenizer = transformers.AutoTokenizer.from_pretrained(model, cache_dir=cache_dir)
+    detector = transformers.AutoModelForSequenceClassification.from_pretrained(model).to(DEVICE)
+    tokenizer = transformers.AutoTokenizer.from_pretrained(model)#, cache_dir=cache_dir)
 
     real, fake = data['original'], data['sampled']
 
@@ -822,7 +822,7 @@ if __name__ == '__main__':
         os.makedirs(cache_dir)
     print(f"Using cache dir {cache_dir}")
 
-    GPT2_TOKENIZER = transformers.GPT2Tokenizer.from_pretrained('gpt2', cache_dir=cache_dir)
+    GPT2_TOKENIZER = transformers.GPT2Tokenizer.from_pretrained('gpt2')#, cache_dir=cache_dir)
 
     # generic generative model
     base_model, base_tokenizer = load_base_model_and_tokenizer(args.base_model_name)
@@ -836,15 +836,15 @@ if __name__ == '__main__':
         elif args.half:
             half_kwargs = dict(torch_dtype=torch.bfloat16)
         print(f'Loading mask filling model {mask_filling_model_name}...')
-        mask_model = transformers.AutoModelForSeq2SeqLM.from_pretrained(mask_filling_model_name, **int8_kwargs, **half_kwargs, cache_dir=cache_dir)
+        mask_model = transformers.AutoModelForSeq2SeqLM.from_pretrained(mask_filling_model_name, **int8_kwargs, **half_kwargs)#, cache_dir=cache_dir)
         try:
             n_positions = mask_model.config.n_positions
         except AttributeError:
             n_positions = 512
     else:
         n_positions = 512
-    preproc_tokenizer = transformers.AutoTokenizer.from_pretrained('t5-small', model_max_length=512, cache_dir=cache_dir)
-    mask_tokenizer = transformers.AutoTokenizer.from_pretrained(mask_filling_model_name, model_max_length=n_positions, cache_dir=cache_dir)
+    preproc_tokenizer = transformers.AutoTokenizer.from_pretrained('t5-small', model_max_length=512)#, cache_dir=cache_dir)
+    mask_tokenizer = transformers.AutoTokenizer.from_pretrained(mask_filling_model_name, model_max_length=n_positions)#, cache_dir=cache_dir)
     if args.dataset in ['english', 'german']:
         preproc_tokenizer = mask_tokenizer
 
