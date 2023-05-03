@@ -828,9 +828,10 @@ if __name__ == '__main__':
 
     # generic generative model
     base_model, base_tokenizer = load_base_model_and_tokenizer(args.base_model_name)
-
+    print("ALEX_1.5")
     # mask filling t5 model
     if not args.baselines_only and not args.random_fills:
+        print("ALEX_1.6")
         int8_kwargs = {}
         half_kwargs = {}
         if args.int8:
@@ -849,7 +850,7 @@ if __name__ == '__main__':
     mask_tokenizer = transformers.AutoTokenizer.from_pretrained(mask_filling_model_name, model_max_length=n_positions)#, cache_dir=cache_dir)
     if args.dataset in ['english', 'german']:
         preproc_tokenizer = mask_tokenizer
-
+    print("ALEX_1.7")
     load_base_model()
 
     print(f'Loading dataset {args.dataset}...')
