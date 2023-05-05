@@ -1,0 +1,17 @@
+#!/bin/bash
+#SBATCH --job-name=myjob         # create a short name for your job
+#SBATCH --nodes=1                # node count
+#SBATCH --ntasks=1               # total number of tasks across all nodes
+#SBATCH --cpus-per-task=1        # cpu-cores per task (>1 if multi-threaded tasks)
+#SBATCH --mem-per-cpu=2G         # memory per cpu-core (4G is default)
+#SBATCH --time=00:01:00          # total run time limit (HH:MM:SS)
+#SBATCH --gres=gpu:1             # number of gpus per node
+#SBATCH --constraint=a100        # set to a100 or v100
+#SBATCH --account=al34
+#SBATCH --partition=gpu
+
+module purge
+module load anaconda3/2022.5
+conda activate nlp2
+
+sh ./paper_scripts/main_small.sh

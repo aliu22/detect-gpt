@@ -1,0 +1,1 @@
+python run.py --output_name bert_small_xsum --base_model_name gpt2 --mask_filling_model_name facebook/bart-base --n_perturbation_list 100 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --cache_dir=/scratch/network/al34/.cache

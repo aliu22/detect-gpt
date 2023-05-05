@@ -4,7 +4,7 @@ import datasets
 SEPARATOR = '<<<SEP>>>'
 
 
-DATASETS = ['writing', 'english', 'german', 'pubmed']
+DATASETS = ['writing', 'english', 'german', 'pubmed', 'xnli_french', 'xnli_spanish', 'xnli_english', 'xnli_german', 'amazon_home', 'cnn_dailymail', 'allocine']
 
 
 def load_pubmed(cache_dir):
@@ -62,6 +62,8 @@ def load_writing(cache_dir=None):
     return filtered
 
 
+# .load_dataset('imdb'.. )
+
 def load_language(language, cache_dir):
     # load either the english or german portion of the wmt16 dataset
     assert language in ['en', 'de']
@@ -72,6 +74,12 @@ def load_language(language, cache_dir):
     sub = [d for d, l in zip(desired_language_docs, lens) if l > 100 and l < 150]
     return sub
 
+def load_allocine(cache_dir):
+    data = datasets.load_dataset('allocine', split='train', cache_dir=cache_dir)['review']
+    lens = [len(d.split()) for d in data]
+    sub = [d for d, l in zip(data, lens) if l > 100 and l < 150]
+    return sub
+
 
 def load_german(cache_dir):
     return load_language('de', cache_dir)
@@ -80,6 +88,44 @@ def load_german(cache_dir):
 def load_english(cache_dir):
     return load_language('en', cache_dir)
 
+
+def load_xnli_french(cache_dir):
+    data = datasets.load_dataset('xnli', 'fr', split='train', cache_dir=cache_dir)
+    data = [f'Premise: {q} Hypothesis:{SEPARATOR}{a}' for q, a in zip(data['premise'], data['hypothesis'])]
+    lens = [len(d.split()) for d in data]
+    sub = [d for d, l in zip(data, lens) if l > 100 and l < 150]
+    return sub
+
+def load_xnli_spanish(cache_dir):
+    data = datasets.load_dataset('xnli', 'es', split='train', cache_dir=cache_dir)
+    data = [f'Premise: {q} Hypothesis:{SEPARATOR}{a}' for q, a in zip(data['premise'], data['hypothesis'])]
+    lens = [len(d.split()) for d in data]
+    sub = [d for d, l in zip(data, lens) if l > 100 and l < 150]
+    return sub
+
+def load_xnli_english(cache_dir):
+    data = datasets.load_dataset('xnli', 'en', split='train', cache_dir=cache_dir)
+    data = [f'Premise: {q} Hypothesis:{SEPARATOR}{a}' for q, a in zip(data['premise'], data['hypothesis'])]
+    lens = [len(d.split()) for d in data]
+    sub = [d for d, l in zip(data, lens) if l > 100 and l < 150]
+    return sub
+
+def load_xnli_german(cache_dir):
+    data = datasets.load_dataset('xnli', 'de', split='train', cache_dir=cache_dir)
+    data = [f'Premise: {q} Hypothesis:{SEPARATOR}{a}' for q, a in zip(data['premise'], data['hypothesis'])]
+    lens = [len(d.split()) for d in data]
+    sub = [d for d, l in zip(data, lens) if l > 100 and l < 150]
+    return sub
+
+def load_amazon_home(cache_dir):
+    data = datasets.load_dataset('amazon_us_reviews', 'Home_Entertainment_v1_00', split='train', cache_dir=cache_dir)['review_body']
+    lens = [len(d.split()) for d in data]
+    sub = [d for d, l in zip(data, lens) if l > 100 and l < 150]
+    return sub
+
+def load_cnn_dailymail(cache_dir):
+    data = datasets.load_dataset('cnn_dailymail', '1.0.0', split='train', cache_dir=cache_dir)['article']
+    return data
 
 def load(name, cache_dir, **kwargs):
     if name in DATASETS:

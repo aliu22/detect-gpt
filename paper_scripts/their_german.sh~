@@ -1,0 +1,1 @@
+python run.py --output_name their_german --base_model_name sberbank-ai/mGPT --mask_filling_model_name google/mt5-xl --n_perturbation_list 100 --n_samples 150 --pct_words_masked 0.3 --span_length 2 --dataset german --cache_dir=/scratch/network/al34/.cache
